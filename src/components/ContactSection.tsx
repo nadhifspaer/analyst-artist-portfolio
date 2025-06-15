@@ -25,20 +25,30 @@ const ContactSection = () => {
     const message = data.get("message");
 
     try {
-      const res = await fetch("/functions/send-contact-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, message }),
-      });
+      const res = await fetch(
+        "https://ajibbbvdxysgztmlltzi.supabase.co/functions/v1/send-contact-email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, name, message }),
+        }
+      );
 
       if (res.ok) {
-        toast("Your message has been sent!", { type: "success" });
+        toast("Your message has been sent!", { description: "I'll contact you soon 👋" });
         formRef.current?.reset();
       } else {
-        toast("Failed to send your message.", { type: "error" });
+        const errData = await res.json();
+        toast("Failed to send your message.", {
+          description: errData.error || undefined,
+        });
       }
-    } catch (err) {
-      toast("Unexpected error. Try again later.", { type: "error" });
+    } catch (err: any) {
+      toast("Unexpected error. Try again later.", {
+        description: typeof err === "object" && err?.message ? err.message : undefined,
+      });
     } finally {
       setLoading(false);
     }
