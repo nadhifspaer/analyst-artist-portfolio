@@ -1,12 +1,22 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import HeroSection from "@/components/HeroSection";
+import ProjectsSection from "@/components/ProjectsSection";
+import ContactSection from "@/components/ContactSection";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen w-full bg-background flex flex-col relative font-inter">
+      {/* Theme Switch */}
+      <div className="absolute top-6 left-6 z-50">
+        <ThemeToggle />
       </div>
+      {/* HERO SECTION */}
+      <HeroSection />
+      {/* PROJECTS SECTION */}
+      <ProjectsSection />
+      {/* CONTACT SECTION */}
+      <ContactSection />
     </div>
   );
 };
