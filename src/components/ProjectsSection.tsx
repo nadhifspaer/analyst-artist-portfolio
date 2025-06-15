@@ -1,12 +1,21 @@
+
 import { useState } from "react";
 import { ArrowRight, X } from "lucide-react";
 import clsx from "clsx";
 
-// Modal component for displaying images
-const ImageModal = ({ open, onClose, imgSrc }: { open: boolean; onClose: () => void; imgSrc: string }) =>
+// Modal component for displaying images with fluid animation
+const ImageModal = ({
+  open,
+  onClose,
+  imgSrc,
+}: {
+  open: boolean;
+  onClose: () => void;
+  imgSrc: string;
+}) =>
   open ? (
-    <div className="fixed top-0 left-0 w-full h-full bg-black/70 z-50 flex items-center justify-center">
-      <div className="bg-white dark:bg-neutral-950 rounded-lg overflow-hidden shadow-lg relative max-w-xl w-full">
+    <div className="fixed top-0 left-0 w-full h-full bg-black/70 z-50 flex items-center justify-center animate-fade-in">
+      <div className="bg-white dark:bg-neutral-950 rounded-lg overflow-hidden shadow-lg relative max-w-xl w-[90vw] animate-scale-in transition-transform">
         <button
           type="button"
           className="absolute top-2 right-2 rounded-full p-1 bg-black/10 hover:bg-black/20 text-black dark:text-white"
@@ -15,11 +24,16 @@ const ImageModal = ({ open, onClose, imgSrc }: { open: boolean; onClose: () => v
         >
           <X className="w-6 h-6" />
         </button>
-        <img src={imgSrc} alt="Project screenshot" className="max-h-[72vh] w-full object-contain bg-white dark:bg-neutral-900" />
+        <img
+          src={imgSrc}
+          alt="Project screenshot"
+          className="max-h-[72vh] w-full object-contain bg-white dark:bg-neutral-900"
+        />
       </div>
     </div>
   ) : null;
 
+// Define the projects
 const projects = [
   {
     id: "xgboost",
@@ -53,23 +67,32 @@ const projects = [
     image: "/lovable-uploads/76e78a2b-626a-4d80-b638-52c7e9c7856b.png", // foxnews.jpg
     btn: {
       label: "View Project",
-      modalImg: "/lovable-uploads/snagephi.png", // filename must match what user uploaded
+      modalImg: "/lovable-uploads/15b9534c-b5b4-4c54-9701-67b6e4b66b58.png", // snagephi.png
       color: "bg-emerald-500 hover:bg-emerald-600 text-white",
     },
   },
-  // You can add a 4th project here if needed, keeping same structure.
+  {
+    id: "azure",
+    title: "Preparation Course for Azure AI Fundamentals (AI-900)",
+    desc:
+      'I have completed the "Preparation Course for Azure AI Fundamentals (AI-900)", which provided foundational knowledge of artificial intelligence and machine learning concepts. The course covered various types of machine learning models, their applications in real-world scenarios, and how they are implemented using Microsoft Azure services.',
+    image: "/lovable-uploads/99e2995e-c347-447c-b6c5-09adf724dfa6.png", // azure.png
+    btn: {
+      label: "View Project",
+      modalImg: "/lovable-uploads/99e2995e-c347-447c-b6c5-09adf724dfa6.png", // show azure certificate on modal
+      color: "bg-[#0078d4] hover:bg-[#005499] text-white",
+    },
+  },
 ];
 
 const ProjectsSection = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImg, setModalImg] = useState("");
 
-  // Use new image for GEPIHI project modal if available
-  const gephiModalImg = "/lovable-uploads/snagephi.png"; // filename must match what user uploaded
-
+  // Handle modal popups for projects with images to show
   const handleProjectClick = (project: typeof projects[number]) => {
-    if (project.id === "gephi") {
-      setModalImg(gephiModalImg);
+    if (project.btn.modalImg) {
+      setModalImg(project.btn.modalImg);
       setModalOpen(true);
     }
   };
