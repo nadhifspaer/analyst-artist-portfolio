@@ -3,19 +3,23 @@ import { useState } from "react";
 import { ArrowRight, X } from "lucide-react";
 import clsx from "clsx";
 
-// Modal component for displaying images with fluid animation
+// Modal component for displaying images with larger size for certain projects
 const ImageModal = ({
   open,
   onClose,
   imgSrc,
+  isLarge = false,
 }: {
   open: boolean;
   onClose: () => void;
   imgSrc: string;
+  isLarge?: boolean;
 }) =>
   open ? (
     <div className="fixed top-0 left-0 w-full h-full bg-black/70 z-50 flex items-center justify-center animate-fade-in">
-      <div className="bg-white dark:bg-neutral-950 rounded-lg overflow-hidden shadow-lg relative max-w-xl w-[90vw] animate-scale-in transition-transform">
+      <div
+        className={`bg-white dark:bg-neutral-950 rounded-lg overflow-hidden shadow-lg relative ${isLarge ? "max-w-4xl w-[96vw]" : "max-w-xl w-[90vw]"} animate-scale-in transition-transform`}
+      >
         <button
           type="button"
           className="absolute top-2 right-2 rounded-full p-1 bg-black/10 hover:bg-black/20 text-black dark:text-white"
@@ -27,7 +31,7 @@ const ImageModal = ({
         <img
           src={imgSrc}
           alt="Project screenshot"
-          className="max-h-[72vh] w-full object-contain bg-white dark:bg-neutral-900"
+          className={`w-full object-contain bg-white dark:bg-neutral-900 ${isLarge ? "max-h-[90vh]" : "max-h-[72vh]"}`}
         />
       </div>
     </div>
@@ -88,11 +92,14 @@ const projects = [
 const ProjectsSection = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImg, setModalImg] = useState("");
+  const [modalLarge, setModalLarge] = useState(false);
 
   // Handle modal popups for projects with images to show
   const handleProjectClick = (project: typeof projects[number]) => {
     if (project.btn.modalImg) {
       setModalImg(project.btn.modalImg);
+      // Popup is larger for 'gephi' and 'azure'
+      setModalLarge(project.id === "gephi" || project.id === "azure");
       setModalOpen(true);
     }
   };
@@ -107,9 +114,9 @@ const ProjectsSection = () => {
           Projects
         </h2>
         <p className="text-gray-500 text-center max-w-xl mx-auto text-base mb-12 leading-snug font-medium">
-          Learning and Solving Data as a Data Science and Data Analyst.
+          Exploring and Analyzing Data as a Data Scientist and Data Analyst.
           <br />
-          For the last 3 years I have been working on many projects and these are the projects.
+          Over the past three years, I have worked on numerous projects involving data-driven insights, and the following are some of the key projects I have completed.
         </p>
         <div className="flex flex-col gap-8">
           {projects.map((project) => (
@@ -150,9 +157,10 @@ const ProjectsSection = () => {
           ))}
         </div>
       </div>
-      <ImageModal open={modalOpen} onClose={() => setModalOpen(false)} imgSrc={modalImg} />
+      <ImageModal open={modalOpen} onClose={() => setModalOpen(false)} imgSrc={modalImg} isLarge={modalLarge} />
     </section>
   );
 };
 
 export default ProjectsSection;
+

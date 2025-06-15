@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { ArrowRight, Instagram, Linkedin } from "lucide-react";
 import { useState } from "react";
@@ -40,14 +39,20 @@ const ContactSection = () => {
         toast("Your message has been sent!", { description: "I'll contact you soon 👋" });
         formRef.current?.reset();
       } else {
-        const errData = await res.json();
-        toast("Failed to send your message.", {
-          description: errData.error || undefined,
+        // Try to surface the detailed error coming from the server
+        let errorMsg = "Failed to send your message.";
+        try {
+          const errData = await res.json();
+          errorMsg = errData?.error ? `Failed to send: ${errData.error}` : errorMsg;
+        } catch {}
+        toast(errorMsg, {
+          description: "Please try again later or contact me directly by email.",
         });
       }
     } catch (err: any) {
+      // Show exact error
       toast("Unexpected error. Try again later.", {
-        description: typeof err === "object" && err?.message ? err.message : undefined,
+        description: typeof err === "object" && err?.message ? err.message : String(err),
       });
     } finally {
       setLoading(false);
