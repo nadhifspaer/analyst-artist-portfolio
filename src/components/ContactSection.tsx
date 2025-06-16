@@ -1,8 +1,8 @@
-
 import * as React from "react";
 import { ArrowRight, Instagram, Linkedin } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const whatsappSVG = (
   <svg width={20} height={20} viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="6" fill="#25D366"/><path d="M16 5.5C10.2 5.5 5.5 10.2 5.5 16c0 2.55.85 4.89 2.28 6.8l-1.5 4.37 4.49-1.48A10.45 10.45 0 0 0 16 26.5c5.8 0 10.5-4.7 10.5-10.5S21.8 5.5 16 5.5zm0 18.86c-1.9 0-3.7-.57-5.23-1.64l-.37-.25-2.66.88.89-2.59-.24-.39A8.62 8.62 0 0 1 7.38 16c0-4.76 3.87-8.64 8.62-8.64s8.62 3.88 8.62 8.64S20.76 24.36 16 24.36zm4.71-5.53c-.26-.13-1.5-.74-1.73-.82-.23-.09-.4-.13-.57.13-.16.25-.66.81-.8.98-.14.17-.29.19-.55.06-.27-.13-1.13-.42-2.15-1.34-.79-.7-1.33-1.56-1.48-1.83-.15-.27-.02-.41.12-.54.13-.13.29-.34.43-.51.14-.17.18-.29.27-.48.09-.17.04-.32-.02-.45-.06-.13-.57-1.38-.78-1.88-.2-.48-.41-.42-.57-.43l-.49-.01c-.17 0-.43.06-.66.28-.23.22-.9.82-.9 1.98 0 1.16.73 2.28 1.15 2.72.42.44 1.49 1.49 3.6 2.24a12.45 12.45 0 0 0 1.25.37c.52.08.99.08 1.36.05.41-.04 1.24-.51 1.41-1.01.18-.49.18-.91.13-.99-.06-.06-.23-.15-.49-.27z" fill="#fff"/></svg>
@@ -32,14 +32,28 @@ const ContactSection = () => {
         return;
       }
 
-      // For now, just show success message - contact form can be implemented later
-      toast("Message received!", { 
+      console.log("Submitting contact form:", { name, email, messageLength: message.length });
+
+      // Call the edge function to send email
+      const { data: result, error } = await supabase.functions.invoke('send-contact-email', {
+        body: { name, email, message }
+      });
+
+      if (error) {
+        console.error("Error calling function:", error);
+        throw error;
+      }
+
+      console.log("Email sent successfully:", result);
+      
+      toast("Message sent successfully!", { 
         description: "Thanks for reaching out! I'll get back to you soon." 
       });
       
       formRef.current?.reset();
     } catch (error) {
-      toast("Something went wrong", { 
+      console.error("Contact form error:", error);
+      toast("Failed to send message", { 
         description: "Please try again or contact me directly." 
       });
     } finally {
